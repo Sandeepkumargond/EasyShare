@@ -1,0 +1,9 @@
+// jsconfig.json or tsconfig.json in the root directory
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
