@@ -77,7 +77,7 @@ export default function UserInfo() {
   return (
     <div className="bg-gray-900 min-h-screen text-white">
       <nav className="bg-gray-800 py-4 px-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">File Upload & Storage</h1>
+        <h1 className="text-2xl font-bold">EasyShare</h1>
         <button
           onClick={() => signOut()}
           className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
