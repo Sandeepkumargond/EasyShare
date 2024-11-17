@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Navbar from "./navbar";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -34,34 +35,43 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="grid place-items-center h-screen">
-      <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400">
-        <h1 className="text-xl font-bold my-4">Login</h1>
+    <div className="min-h-screen bg-slate-900">
+      <Navbar />
+      {/* Login Form */}
+      <div className="grid place-items-center h-[calc(100vh-4rem)]">
+        <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400 bg-slate-800">
+          <h1 className="text-xl font-bold my-4 text-white">Login</h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            placeholder="Email"
-          />
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
-          />
-          <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">
-            Login
-          </button>
-          {error && (
-            <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
-              {error}
-            </div>
-          )}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Email"
+              className="px-4 py-2 rounded-md bg-white text-black placeholder-gray-400"
+            />
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="Password"
+              className="px-4 py-2 rounded-md bg-white text-black placeholder-gray-400"
+            />
+            <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2 rounded-md hover:bg-green-500">
+              Login
+            </button>
+            {error && (
+              <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
+                {error}
+              </div>
+            )}
 
-          <Link className="text-sm mt-3 text-right" href={"/register"}>
-            Don't have an account? <span className="underline">Register</span>
-          </Link>
-        </form>
+            <Link
+              className="text-sm mt-3 text-right text-white hover:text-green-400"
+              href={"/register"}
+            >
+              Don't have an account? <span className="underline">Register</span>
+            </Link>
+          </form>
+        </div>
       </div>
     </div>
   );
