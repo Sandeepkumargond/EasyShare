@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+
 const AllFiles = ({ files }) => {
   const [allFiles, setAllFiles] = useState(files); // Store files in state
 
@@ -64,19 +65,20 @@ const AllFiles = ({ files }) => {
                   {/* Copy Button */}
                   <button
                     onClick={handleCopy}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm"
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-2 rounded-md text-sm"
                   >
-                    Copy URL
+                    Copy
                   </button>
+                  </p>
 
-                  {/* Delete Button */}
-                  <button
+                 <p><button
                     onClick={() => handleDelete(file._id)}
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
                   >
                     Delete
-                  </button>
-                </p>
+                  </button></p>
+                  
+               
                 <p>
                   <a
                     href={file.secure_url}

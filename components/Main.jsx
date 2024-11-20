@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { CldUploadWidget } from "next-cloudinary";
 import { saveToDatabase, fetchFiles } from "@/lib/actions";
 import AllFiles from "./AllFiles";
+import { SlHome } from "react-icons/sl";
 
 export default function UserInfo() {
   const { data: session } = useSession(); 
@@ -107,9 +108,9 @@ export default function UserInfo() {
           <div className="w-full max-w-4xl">
             <button
               onClick={() => setShowAllFiles(false)}
-              className="mt-2 bg-gray-700 hover:bg-gray-600 px-4 py8 rounded-md"
+              className=" bg-gray-700 hover:bg-gray-600 px-4 py-4 rounded-md"
             >
-              back
+             <SlHome />
             </button>
             <h2 className="text-3xl font-semibold mb-6">All Files</h2>
             {loading ? (
