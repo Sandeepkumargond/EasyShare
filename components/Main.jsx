@@ -8,7 +8,7 @@ import AllFiles from "./AllFiles";
 import { SlHome } from "react-icons/sl";
 
 export default function UserInfo() {
-  const { data: session } = useSession(); 
+  const { data: session } = useSession();
   const [file, setFile] = useState({});
   const [error, setError] = useState("");
   const [fileUrl, setFileUrl] = useState("");
@@ -58,10 +58,9 @@ export default function UserInfo() {
         type: file.type,
       };
 
-      const result = await saveToDatabase(filedata, session?.user.id); 
+      const result = await saveToDatabase(filedata, session?.user.id);
       console.log("Save result:", result);
 
-     
       const filesResult = await fetchFiles();
       setAllFiles(JSON.parse(filesResult));
 
@@ -88,7 +87,9 @@ export default function UserInfo() {
   return (
     <div className="bg-gray-900 min-h-screen text-white">
       <nav className="bg-gray-800 py-4 px-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">EasyShare</h1>
+        <h1 className="text-2xl font-bold">
+          {session?.user?.name ? `Welcome, ${session.user.name}` : "EasyShare"}
+        </h1>
         <h2
           onClick={handleViewAllFiles}
           className="cursor-pointer hover:bg-white hover:text-black transition-colors rounded-md p-3 bg-green-500"
@@ -110,7 +111,7 @@ export default function UserInfo() {
               onClick={() => setShowAllFiles(false)}
               className=" bg-gray-700 hover:bg-gray-600 px-4 py-4 rounded-md"
             >
-             <SlHome />
+              <SlHome />
             </button>
             <h2 className="text-3xl font-semibold mb-6">All Files</h2>
             {loading ? (
@@ -124,7 +125,6 @@ export default function UserInfo() {
                 )}
               </div>
             )}
-            
           </div>
         ) : (
           <>
@@ -176,7 +176,9 @@ export default function UserInfo() {
 
             {fileUrl && (
               <div className="mt-4 p-4 bg-gray-800 rounded-lg">
-                <p className="text-green-400 mb-2">File uploaded successfully!</p>
+                <p className="text-green-400 mb-2">
+                  File uploaded successfully!
+                </p>
                 <div className="flex flex-col gap-2">
                   <p>
                     <strong>Name:</strong> {file.name}

@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-white flex flex-col">
       <Navbar/>
-      {/* Hero Section */}
+      
       <header className="flex-grow bg-slate-900 flex flex-col items-center justify-center text-center px-4">
         <Image
           src="/logo.png"

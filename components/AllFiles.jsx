@@ -1,99 +1,94 @@
-import { useState } from 'react';
-
+import { useState } from "react";
 
 const AllFiles = ({ files }) => {
-  const [allFiles, setAllFiles] = useState(files); // Store files in state
+  const [allFiles, setAllFiles] = useState(files);
 
-  // Function to handle deleting a file
   const handleDelete = async (id) => {
     const confirmDelete = confirm("Are you sure you want to delete this file?");
     if (!confirmDelete) return;
 
     try {
-      // Make the DELETE request to the correct API route
       const response = await fetch(`/api/files/${id}`, {
         method: "DELETE",
       });
 
-      // Check if the response is successful
       if (!response.ok) {
-        const errorText = await response.text(); // Capture unexpected responses
+        const errorText = await response.text();
         throw new Error(errorText);
       }
 
-      // Parse the JSON response if the request was successful
       const result = await response.json();
       alert(result.success || "File deleted successfully");
 
-      // Re-fetch the files after deletion
-      const updatedFiles = await fetchFiles(); // Call the function to fetch updated files
-      setAllFiles(updatedFiles); // Update the state with the latest files
+      const updatedFiles = await fetchFiles();
+      setAllFiles(updatedFiles);
     } catch (error) {
       console.error("Error deleting file:", error);
       alert(error.message || "An error occurred while deleting the file.");
     }
   };
 
-  // Function to handle copying the file URL to the clipboard
   const handleCopy = (e) => {
     const text = e.target.previousElementSibling.innerText;
     navigator.clipboard.writeText(text);
     alert("Copied to clipboard!");
   };
 
-  // Function to fetch all files (assuming you have an API to fetch them)
   const fetchFiles = async () => {
     const response = await fetch("/api/files");
     const data = await response.json();
-    return data.files || []; // Ensure files are returned in a consistent format
+    return data.files || [];
   };
 
   return (
-    <div>
-      <ul>
+    <div className="p-4">
+      <ul className=" md:grid-cols-2 lg:grid-cols-3 gap-4">
         {allFiles.length > 0 ? (
           allFiles.map((file) => (
             <li key={file._id}>
-              <div className="p-4 bg-gray-800 rounded-md">
-                <p><strong>Name:</strong> {file.name}</p>
-                <p><strong>Size:</strong> {Math.round(file.size / 1024)} KB</p>
-                <p><strong>Type:</strong> {file.type}</p>
-                <p className="flex items-center gap-2">
+              <div className="p-4 bg-gray-900 rounded-md shadow-md">
+                <p className="text-sm md:text-base">
+                  <strong>Name:</strong> {file.name}
+                </p>
+                <p className="text-sm md:text-base">
+                  <strong>Size:</strong> {Math.round(file.size / 1024)} KB
+                </p>
+                <p className="text-sm md:text-base">
+                  <strong>Type:</strong> {file.type}
+                </p>
+                <p className="flex items-center gap-2 text-sm md:text-base">
                   <strong>URL:</strong>
-                  <span>{file.secure_url}</span>
-
-                  {/* Copy Button */}
+                  <span className="truncate">{file.secure_url}</span>
                   <button
                     onClick={handleCopy}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-2 rounded-md text-sm"
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md text-xs"
                   >
                     Copy
                   </button>
-                  </p>
-
-                 <p><button
+                </p>
+                <div className="flex justify-between mt-4">
+                  <button
                     onClick={() => handleDelete(file._id)}
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
                   >
                     Delete
-                  </button></p>
-                  
-               
-                <p>
+                  </button>
                   <a
                     href={file.secure_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 underline"
+                    className="text-blue-400 hover:text-blue-300 underline text-sm"
                   >
-                    Download/View File
+                    Download/View
                   </a>
-                </p>
+                </div>
               </div>
             </li>
           ))
         ) : (
-          <p className="text-center text-gray-400">No files available</p>
+          <p className="text-center text-gray-400 col-span-full">
+            No files available
+          </p>
         )}
       </ul>
     </div>
