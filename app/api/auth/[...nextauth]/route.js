@@ -18,24 +18,50 @@ export const authOptions = {
           const user = await User.findOne({ email });
 
           if (!user) {
-            return null;
+            throw new Error("User not found");
           }
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
           if (!passwordsMatch) {
-            return null;
+            throw new Error("Invalid credentials");
           }
 
-          return user;
+          // Return user data, including the ID, for JWT generation
+          return {
+            id: user._id.toString(), // Convert MongoDB ObjectId to string
+            email: user.email,
+            name: user.name,
+          };
         } catch (error) {
-          console.log("Error: ", error);
+          console.error("Error during authorization: ", error);
+          throw new Error("Authorization failed");
         }
       },
     }),
   ],
   session: {
     strategy: "jwt",
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
+  callbacks: {
+    // Add user ID to the JWT token
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id; // Add user ID to the token
+      }
+      return token;
+    },
+
+    // Add user ID to the session object
+    async session({ session, token }) {
+      if (token && token.id) {
+        session.user.id = token.id; // Add user ID to the session
+      }
+      return session;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {

@@ -76,7 +76,7 @@ export default function ContactForm() {
             {success ? (
               <div className="bg-green-600 p-4 rounded-md text-center">
                 <p className="text-white">
-                  Thank you for your message! We'll get back to you soon.
+                  Thank you for your message We will get back to you soon.
                 </p>
                 <button
                   onClick={() => setSuccess(false)}
