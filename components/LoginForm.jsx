@@ -91,7 +91,7 @@ export default function LoginForm() {
             )}
 
             <Link
-              className="text-sm mt-3 text-right text-white hover:text-green-400"
+              className="text-sm mt-3 text-right text-white "
               href={"/register"}
             >
               Do not have an account? <span className="underline">Register</span>
