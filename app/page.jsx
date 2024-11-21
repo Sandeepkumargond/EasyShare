@@ -23,7 +23,7 @@ export default function Home() {
                   </span>
                   <div>
                     <p className="w-full text-white max-w-[500px] text-[17px]">
-                    Easyshare is the easiest way to upload and share your important documents and images. Whether it's a PDF for work or an image to share with friends, EasyShare makes it simple to upload, store, and share link of the files in just a few clicks.
+                    Easyshare is the easiest way to upload and share your important documents and images. Whether it is a PDF for work or an image to share with friends, EasyShare makes it simple to upload, store, and share link of the files in just a few clicks.
                     </p>
                   </div>
                   <div className="flex justify-center text-white md:justify-start">
