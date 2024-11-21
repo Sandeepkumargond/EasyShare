@@ -27,9 +27,9 @@ export const authOptions = {
             throw new Error("Invalid credentials");
           }
 
-          // Return user data, including the ID, for JWT generation
+         
           return {
-            id: user._id.toString(), // Convert MongoDB ObjectId to string
+            id: user._id.toString(), 
             email: user.email,
             name: user.name,
           };
@@ -47,18 +47,18 @@ export const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
   },
   callbacks: {
-    // Add user ID to the JWT token
+    
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id; // Add user ID to the token
+        token.id = user.id; 
       }
       return token;
     },
 
-    // Add user ID to the session object
+   
     async session({ session, token }) {
       if (token && token.id) {
-        session.user.id = token.id; // Add user ID to the session
+        session.user.id = token.id; 
       }
       return session;
     },

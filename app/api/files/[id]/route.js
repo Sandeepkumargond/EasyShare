@@ -2,11 +2,11 @@ import { connectMongoDB } from "@/lib/mongodb";
 import File from "@/models/File";
 
 export async function DELETE(req, { params }) {
-  const { id } = params; // Get the file ID from the URL
+  const { id } = params; 
 
   try {
     await connectMongoDB();
-    const deletedFile = await File.findByIdAndDelete(id); // Delete the file by ID
+    const deletedFile = await File.findByIdAndDelete(id); 
 
     if (!deletedFile) {
       return new Response(
