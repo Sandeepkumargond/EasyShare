@@ -39,7 +39,7 @@ export default function LoginForm() {
       <Navbar />
       {/* Login Form */}
       <div className="grid place-items-center h-[calc(100vh-4rem)]">
-        <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400 bg-slate-800">
+        <div className="shadow-lg p-5 rounded-lg border-t-4 border-blue-500 bg-slate-800">
           <h1 className="text-xl font-bold my-4 text-white">Login</h1>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -55,7 +55,7 @@ export default function LoginForm() {
               placeholder="Password"
               className="px-4 py-2 rounded-md bg-white text-black placeholder-gray-400"
             />
-            <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2 rounded-md hover:bg-green-500">
+            <button className="bg-blue-600 text-white font-bold cursor-pointer px-6 py-2 rounded-md hover:bg-blue-400">
               Login
             </button>
             {error && (

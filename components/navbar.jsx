@@ -10,7 +10,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Image
-              src="/logo.png"
+              src="/logoo.png"
               alt="EasyShare Logo"
               width={60}
               height={60}

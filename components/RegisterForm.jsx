@@ -64,9 +64,9 @@ export default function App() {
   return (
     <>
       <Navbar />
-      {/* Registration Form */}
+     
       <div className="grid place-items-center h-screen bg-slate-900">
-        <div className="shadow-lg p-5 rounded-lg border-t-4 border-green-400 bg-slate-800">
+        <div className="shadow-lg p-5 rounded-lg border-t-4 border-blue-500 bg-slate-800">
           <h1 className="text-xl font-bold my-4 text-white">Register</h1>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -88,7 +88,7 @@ export default function App() {
               type="password"
               placeholder="Password"
             />
-            <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2 rounded-md">
+            <button className="bg-blue-600 hover:bg-blue-400 text-white font-bold cursor-pointer px-6 py-2 rounded-md">
               Register
             </button>
 
@@ -98,7 +98,7 @@ export default function App() {
               </div>
             )}
 
-            <Link className="text-sm mt-3 text-right text-white" href={"/"}>
+            <Link className="text-sm mt-3  text-right text-white" href={"/"}>
               Already have an account? <span className="underline">Login</span>
             </Link>
           </form>

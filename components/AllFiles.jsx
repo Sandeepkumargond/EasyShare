@@ -24,7 +24,7 @@ const AllFiles = ({ files }) => {
       setAllFiles(updatedFiles);
     } catch (error) {
       console.error("Error deleting file:", error);
-      alert(error.message || "An error occurred while deleting the file.");
+      
     }
   };
 

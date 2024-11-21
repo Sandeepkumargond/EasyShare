@@ -43,7 +43,10 @@ export default function UserInfo() {
   };
 
   const handleSubmit = async () => {
-    if (!fileUrl) {
+    if(file.size > 10 * 1024 * 1024) {
+      alert("File size should be less than 10MB");
+    }
+    else if (!fileUrl) {
       alert("Please upload a file first");
       return;
     }
@@ -92,7 +95,7 @@ export default function UserInfo() {
         </h1>
         <h2
           onClick={handleViewAllFiles}
-          className="cursor-pointer hover:bg-white hover:text-black transition-colors rounded-md p-3 bg-green-500"
+          className="cursor-pointer hover:bg-white hover:text-black transition-colors rounded-md p-3 bg-blue-500"
         >
           All Files
         </h2>
