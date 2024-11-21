@@ -1,7 +1,15 @@
+'use client';
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 export default function Navbar() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <>
       {/* Navigation Bar */}
@@ -18,7 +26,7 @@ export default function Navbar() {
             <span className="ml-2 text-lg font-bold text-white">EasyShare</span>
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links (Desktop) */}
           <div className="hidden md:flex space-x-4">
             <a
               href="/"
@@ -48,7 +56,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
-            <button className="text-white">
+            <button onClick={toggleMobileMenu} aria-label="Toggle navigation">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -66,9 +74,13 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-        
+
         {/* Mobile Navigation Links */}
-        <div className="md:hidden bg-gray-800 text-white flex flex-col space-y-4 py-4 px-6">
+        <div
+          className={`md:hidden bg-gray-800 text-white flex flex-col space-y-4 py-4 px-6 ${
+            isMobileMenuOpen ? "block" : "hidden"
+          }`}
+        >
           <a
             href="/"
             className="px-4 py-2 hover:bg-black rounded-md transition"
