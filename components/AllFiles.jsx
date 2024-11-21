@@ -1,7 +1,22 @@
+"use client";
 import { useState } from "react";
 
 const AllFiles = ({ files }) => {
   const [allFiles, setAllFiles] = useState(files);
+
+  const fetchFiles = async () => {
+    try {
+      const response = await fetch("/api/files");
+      if (!response.ok) {
+        throw new Error("Failed to fetch files");
+      }
+      const data = await response.json();
+      return data.files || [];
+    } catch (error) {
+      console.error("Error fetching files:", error.message);
+      return [];
+    }
+  };
 
   const handleDelete = async (id) => {
     const confirmDelete = confirm("Are you sure you want to delete this file?");
@@ -23,26 +38,20 @@ const AllFiles = ({ files }) => {
       const updatedFiles = await fetchFiles();
       setAllFiles(updatedFiles);
     } catch (error) {
-      console.error("Error deleting file:", error);
-      
+      console.error("Error deleting file:", error.message);
+      alert(error.message || "Failed to delete the file");
     }
   };
 
-  const handleCopy = (e) => {
-    const text = e.target.previousElementSibling.innerText;
-    navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
-  };
-
-  const fetchFiles = async () => {
-    const response = await fetch("/api/files");
-    const data = await response.json();
-    return data.files || [];
+  const handleCopy = (url) => {
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Copied to clipboard!");
+    });
   };
 
   return (
     <div className="p-4">
-      <ul className=" md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <ul className="md:grid-cols-2 lg:grid-cols-3 gap-4">
         {allFiles.length > 0 ? (
           allFiles.map((file) => (
             <li key={file._id}>
@@ -60,7 +69,7 @@ const AllFiles = ({ files }) => {
                   <strong>URL:</strong>
                   <span className="truncate">{file.secure_url}</span>
                   <button
-                    onClick={handleCopy}
+                    onClick={() => handleCopy(file.secure_url)}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md text-xs"
                   >
                     Copy

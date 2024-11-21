@@ -43,10 +43,9 @@ export default function UserInfo() {
   };
 
   const handleSubmit = async () => {
-    if(file.size > 10 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       alert("File size should be less than 10MB");
-    }
-    else if (!fileUrl) {
+    } else if (!fileUrl) {
       alert("Please upload a file first");
       return;
     }
@@ -109,10 +108,10 @@ export default function UserInfo() {
 
       <div className="container mx-auto px-4 py-12 flex flex-col items-center">
         {showAllFiles ? (
-          <div className="w-full max-w-4xl">
+          <div className="w-full max-w-4xl mx-auto">
             <button
               onClick={() => setShowAllFiles(false)}
-              className=" bg-gray-700 hover:bg-gray-600 px-4 py-4 rounded-md"
+              className="bg-gray-700 hover:bg-gray-600 px-4 py-4 rounded-md"
             >
               <SlHome />
             </button>
@@ -192,9 +191,11 @@ export default function UserInfo() {
                   <p>
                     <strong>Type:</strong> {file.type}
                   </p>
-                  <p className="flex items-center gap-2">
+                  <p className="flex flex-col sm:flex-row items-center gap-2">
                     <strong>URL:</strong>
-                    <span>{file.secure_url}</span>
+                    <span className="truncate max-w-full sm:max-w-xs">
+                      {file.secure_url}
+                    </span>
                     <button
                       onClick={handleCopy}
                       className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm"
@@ -206,7 +207,7 @@ export default function UserInfo() {
                     href={fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700"
+                    className="text-blue-500 hover:text-blue-700 text-sm sm:text-base"
                   >
                     Open File
                   </a>

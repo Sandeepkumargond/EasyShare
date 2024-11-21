@@ -10,13 +10,30 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
+
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!email || !password) {
+      setError("Please fill out all fields.");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email.");
+      return;
+    }
+
     try {
+      setIsLoading(true);
       const res = await signIn("credentials", {
         email,
         password,
@@ -24,13 +41,16 @@ export default function LoginForm() {
       });
 
       if (res.error) {
-        setError("Invalid Credentials");
+        setError("Invalid credentials. Please try again.");
+        setIsLoading(false);
         return;
       }
 
-      router.replace("dashboard");
+      router.replace("/dashboard"); // Ensure the path is correct
     } catch (error) {
       console.log(error);
+      setError("An error occurred. Please try again later.");
+      setIsLoading(false);
     }
   };
 
@@ -38,8 +58,8 @@ export default function LoginForm() {
     <div className="min-h-screen bg-slate-900">
       <Navbar />
       {/* Login Form */}
-      <div className="grid place-items-center h-[calc(100vh-4rem)]">
-        <div className="shadow-lg p-5 rounded-lg border-t-4 border-blue-500 bg-slate-800">
+      <div className="grid place-items-center h-[calc(100vh-4rem)] px-4 sm:px-8 md:px-16">
+        <div className="shadow-lg p-5 rounded-lg border-t-4 border-blue-500 bg-slate-800 w-full max-w-md sm:max-w-lg">
           <h1 className="text-xl font-bold my-4 text-white">Login</h1>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -47,16 +67,22 @@ export default function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               type="text"
               placeholder="Email"
-              className="px-4 py-2 rounded-md bg-white text-black placeholder-gray-400"
+              className="px-4 py-2 rounded-md bg-white text-black placeholder-gray-400 w-full"
+              value={email}
             />
             <input
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               placeholder="Password"
-              className="px-4 py-2 rounded-md bg-white text-black placeholder-gray-400"
+              className="px-4 py-2 rounded-md bg-white text-black placeholder-gray-400 w-full"
+              value={password}
             />
-            <button className="bg-blue-600 text-white font-bold cursor-pointer px-6 py-2 rounded-md hover:bg-blue-400">
-              Login
+            <button
+              type="submit"
+              className="bg-blue-600 text-white font-bold cursor-pointer px-6 py-2 rounded-md hover:bg-blue-400 w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? "Logging in..." : "Login"}
             </button>
             {error && (
               <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
