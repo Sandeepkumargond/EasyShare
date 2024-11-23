@@ -45,8 +45,7 @@ export default function LoginForm() {
         setIsLoading(false);
         return;
       }
-
-      router.replace("/dashboard"); // Ensure the path is correct
+      router.replace("/dashboard"); 
     } catch (error) {
       console.log(error);
       setError("An error occurred. Please try again later.");
@@ -57,7 +56,7 @@ export default function LoginForm() {
   return (
     <div className="min-h-screen bg-slate-900">
       <Navbar />
-      {/* Login Form */}
+      
       <div className="grid place-items-center h-[calc(100vh-4rem)] px-4 sm:px-8 md:px-16">
         <div className="shadow-lg p-5 rounded-lg border-t-4 border-blue-500 bg-slate-800 w-full max-w-md sm:max-w-lg">
           <h1 className="text-xl font-bold my-4 text-white">Login</h1>

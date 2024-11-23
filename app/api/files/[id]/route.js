@@ -14,7 +14,6 @@ export async function DELETE(req, { params }) {
         { status: 404 }
       );
     }
-
     return new Response(
       JSON.stringify({ success: "File deleted successfully", file: deletedFile }),
       { status: 200 }

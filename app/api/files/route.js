@@ -5,10 +5,10 @@ export async function GET(req) {
   try {
     await connectMongoDB();
 
-    // Fetch all files from the database
+   
     const files = await File.find();
 
-    // Return files as JSON
+   
     return new Response(
       JSON.stringify({ files }),
       { status: 200, headers: { "Content-Type": "application/json" } }

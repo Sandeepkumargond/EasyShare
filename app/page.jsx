@@ -9,11 +9,11 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white flex flex-col">
       <Navbar />
       <div>
-        {/* Section 01 */}
+        
         <div className="relative w-full flex flex-col md:flex-row items-center justify-between text-black mt-16 px-4 md:px-12">
           <div className="space-y-9">
             <div className="relative flex flex-col md:flex-row justify-between items-center gap-5 space-y-3 leading-10">
-              {/* Left side (Text) */}
+              
               <div className="flex flex-col space-y-2 text-center md:text-left md:max-w-[500px]">
                 <h1 className="text-white font-bold text-[38px] font-loader">
                   EasyShare
@@ -37,14 +37,14 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right side (Image) */}
+             
               <div className="hidden md:block">
                 <Image
                   src={"/Frame.png"}
                   alt="laptop"
                   width={500}
                   height={600}
-                  className="mx-auto h-auto"
+                  className="mx-auto ml-32 h-auto"
                 />
               </div>
             </div>
@@ -52,7 +52,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Footer */}
+      
       <footer className="mt-auto py-4 text-center text-slate-400 text-sm">
         © 2024 EasyShare. All rights reserved.
       </footer>

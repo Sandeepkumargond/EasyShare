@@ -20,8 +20,10 @@ export default function UserInfo() {
 
   const fetchAllFiles = async () => {
     try {
+      // console.log();
+      
       setLoading(true);
-      const files = await fetchFiles();
+      const files = await fetchFiles(session.user.id);
       setAllFiles(JSON.parse(files));
       setLoading(false);
     } catch (err) {
@@ -78,6 +80,8 @@ export default function UserInfo() {
       setSubmitLoading(false);
     }
   };
+  
+
 
   const handleCopy = () => {
     navigator.clipboard.writeText(file.secure_url).then(() => {
@@ -134,6 +138,7 @@ export default function UserInfo() {
 
             <CldUploadWidget
               uploadPreset="easyshare"
+              resourceType="raw" 
               onSuccess={(result, { widget }) => {
                 const fileInfo = result?.info;
                 console.log("Upload result:", fileInfo);
@@ -149,17 +154,14 @@ export default function UserInfo() {
                 widget.close();
               }}
             >
-              {({ open }) => {
-                return (
-                  <button
-                    onClick={() => open()}
-                    className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md"
-                    disabled={submitLoading}
-                  >
-                    Upload an Image
-                  </button>
-                );
-              }}
+              {({ open }) => (
+                <button
+                  onClick={() => open()}
+                  className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md"
+                >
+                  Upload a File
+                </button>
+              )}
             </CldUploadWidget>
 
             <button
@@ -177,7 +179,7 @@ export default function UserInfo() {
             {error && <p className="text-red-500 mt-4">{error}</p>}
 
             {fileUrl && (
-              <div className="mt-4 p-4 bg-gray-800 rounded-lg">
+              <div className="mt-4 p-4 sm:w-10 bg-gray-800 rounded-lg">
                 <p className="text-green-400 mb-2">
                   File uploaded successfully!
                 </p>
