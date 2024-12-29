@@ -7,9 +7,11 @@ import { saveToDatabase, fetchFiles } from "@/lib/actions";
 import AllFiles from "./AllFiles";
 import { SlHome } from "react-icons/sl";
 import { FaSearch } from "react-icons/fa"; // Import the search icon
+import { ToastContainer, toast } from "react-toastify"; // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; // Import the styles for Toastify
 
 export default function UserInfo() {
-  const { data: session, status } = useSession();  // Added status for checking session loading
+  const { data: session, status } = useSession();
   const [file, setFile] = useState({});
   const [error, setError] = useState("");
   const [fileUrl, setFileUrl] = useState("");
@@ -18,7 +20,7 @@ export default function UserInfo() {
   const [showAllFiles, setShowAllFiles] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState("Copy");
-  const [showIcon, setShowIcon] = useState(false); // Search icon visibility state
+  const [showIcon, setShowIcon] = useState(false);
 
   const fetchAllFiles = async () => {
     try {
@@ -26,7 +28,7 @@ export default function UserInfo() {
         console.error("Session is undefined");
         return;
       }
-      setShowIcon(true); // Show search icon
+      setShowIcon(true);
       setLoading(true);
       const files = await fetchFiles(session.user.id);
       setAllFiles(JSON.parse(files));
@@ -34,15 +36,15 @@ export default function UserInfo() {
       console.error("Error fetching all files:", err);
     } finally {
       setLoading(false);
-      setShowIcon(false); // Hide search icon
+      setShowIcon(false);
     }
   };
 
   useEffect(() => {
-    if (status === "authenticated") {  // Only fetch files when the session is authenticated
+    if (status === "authenticated") {
       fetchAllFiles();
     }
-  }, [status]);  // Add status as a dependency to trigger re-fetch when session is authenticated
+  }, [status]);
 
   const handleViewAllFiles = async () => {
     setShowAllFiles(true);
@@ -53,45 +55,42 @@ export default function UserInfo() {
 
   const handleSubmit = async () => {
     if (file.size > 10 * 1024 * 1024) {
-      alert("File size should be less than 10MB");
+      toast.error("File size should be less than 10MB");
       return;
     } else if (!fileUrl) {
-      alert("Please upload a file first");
+      toast.error("Please upload a file first");
       return;
     }
-  
+
     try {
-      setShowIcon(true); // Show loading icon
+      setShowIcon(true);
       setSubmitLoading(true);
       setError("");
-  
-      // Save file data
+
       const filedata = {
         name: file.name,
         secure_url: fileUrl,
         size: file.size,
         type: file.type,
       };
-  
+
       await saveToDatabase(filedata, session?.user.id);
-  
-      // Fetch updated files after saving
+
       await fetchAllFiles();
-  
-      // Clear file input and URL
+
       setFile({});
       setFileUrl("");
-  
-      alert("File uploaded successfully!");
-  
-      // Redirect to "All Files" view
+
+      toast.success("File uploaded successfully!");
+
       setShowAllFiles(true);
     } catch (err) {
       console.error("Error saving file:", err);
       setError(err.message || "Failed to save file");
+      toast.error("Failed to upload file");
     } finally {
       setSubmitLoading(false);
-      setShowIcon(false); // Hide loading icon
+      setShowIcon(false);
     }
   };
 
@@ -103,10 +102,9 @@ export default function UserInfo() {
   };
 
   if (status === "loading") {
-    // Show a loading spinner while session is being fetched
     return (
       <div className="bg-gray-900 min-h-screen text-white flex justify-center items-center relative">
-        <div className="absolute inset-0 bg-gray-900 opacity-50 backdrop-blur-sm" /> {/* Blurred background */}
+        <div className="absolute inset-0 bg-gray-900 opacity-50 backdrop-blur-sm" />
         <div className="flex justify-center items-center mt-6 z-10">
           <div className="w-16 h-16 border-4 border-t-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
         </div>
@@ -115,7 +113,6 @@ export default function UserInfo() {
   }
 
   if (status === "unauthenticated") {
-    // Handle unauthenticated state
     return <div>You are not authenticated. Please log in.</div>;
   }
 
@@ -171,7 +168,6 @@ export default function UserInfo() {
               onSuccess={(result, { widget }) => {
                 const fileInfo = result?.info;
                 console.log("Upload result:", fileInfo);
-                // Check for the secure_url property
                 if (fileInfo?.secure_url) {
                   setFile({
                     name: fileInfo.original_filename,
@@ -184,7 +180,6 @@ export default function UserInfo() {
                   console.error("File upload failed: No secure_url returned.");
                 }
               }}
-              
               onQueuesEnd={(result, { widget }) => {
                 widget.close();
               }}
@@ -214,7 +209,7 @@ export default function UserInfo() {
             {error && <p className="text-red-500 mt-4">{error}</p>}
 
             {fileUrl && (
-              <div className="mt-4 p-4 bg-gray-800 rounded-lg max-w-3xl">
+              <div className="mt-4 p-4 bg-gray-800 rounded-lg max-w-full sm:max-w-3xl">
                 <p className="text-green-400 mb-2">File uploaded successfully!</p>
                 <div className="flex flex-col gap-2">
                   <p>
@@ -228,12 +223,12 @@ export default function UserInfo() {
                   </p>
                   <p className="flex flex-col sm:flex-row items-center gap-2">
                     <strong>URL:</strong>
-                    <span className="truncate max-w-full sm:max-w-md">
+                    <span className="truncate max-w-full sm:max-w-md overflow-hidden text-ellipsis">
                       {file.secure_url}
                     </span>
                     <button
                       onClick={handleCopy}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm"
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm mt-2 sm:mt-0"
                     >
                       {copyButtonText}
                     </button>
@@ -242,7 +237,7 @@ export default function UserInfo() {
                     href={fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 hover:text-blue-700 text-sm sm:text-base"
+                    className="text-blue-500 hover:text-blue-700 text-sm sm:text-base mt-2 sm:mt-0"
                   >
                     Open File
                   </a>
@@ -258,6 +253,9 @@ export default function UserInfo() {
           </div>
         )}
       </div>
+
+      {/* Add ToastContainer to render notifications */}
+      <ToastContainer />
     </div>
   );
 }
