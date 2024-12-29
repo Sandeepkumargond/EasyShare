@@ -109,7 +109,7 @@ const AllFiles = ({ files }) => {
         )}
       </ul>
 
-      {/* ToastContainer component to render toast notifications */}
+      
       <ToastContainer />
     </div>
   );

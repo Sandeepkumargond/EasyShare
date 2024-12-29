@@ -15,7 +15,7 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Loading state
 
-  const router = useRouter();
+  const router = useRouter(); 
 
   const validateEmail = (email) => {
     const re = /\S+@\S+\.\S+/;
@@ -37,31 +37,28 @@ export default function LoginForm() {
   
     try {
       setIsLoading(true);
-      toast.info("Logging in...");
   
-      // Check credentials immediately
+      const startTime = Date.now();
       const res = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
+      console.log("API Response Time:", Date.now() - startTime, "ms");
   
       if (res?.error) {
         toast.error("Invalid credentials. Please try again.");
-        setIsLoading(false);
-        return;
+      } else {
+        toast.success("Login successful!");
+        router.replace("/dashboard"); // Navigate immediately
       }
-  
-      // After login, show success toast and navigate
-      toast.success("Login successful!");
-      setTimeout(() => {
-        router.replace("/dashboard");
-      }, 2000); // Give time for toast to show before redirect
     } catch (error) {
       toast.error("An error occurred. Please try again later.");
+    } finally {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-slate-900">

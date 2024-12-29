@@ -7,13 +7,13 @@ import Navbar from "./navbar";
 import { ToastContainer, toast } from "react-toastify"; // Import toastify
 import "react-toastify/dist/ReactToastify.css"; // Import the toastify CSS
 import { ClipLoader } from "react-spinners"; // Import the spinner from react-spinners
+import { signIn } from "next-auth/react"; // Import signIn for automatic login
 
 export default function App() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false); // State for loading icon
-  const [success, setSuccess] = useState(false); // State for success message
 
   const router = useRouter();
 
@@ -44,6 +44,7 @@ export default function App() {
         return;
       }
 
+      // Register the user
       const res = await fetch("api/register", {
         method: "POST",
         headers: {
@@ -57,10 +58,23 @@ export default function App() {
       });
 
       if (res.ok) {
-        toast.success("Successfully registered!"); // Use toastify for success
-        setTimeout(() => {
-          router.push("/dashboard"); // Redirect to userinfo after 2 seconds
-        }, 2000);
+        toast.success("Successfully registered! Logging you in...");
+
+        // Automatically log in the user
+        const loginRes = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (loginRes?.error) {
+          toast.error("Login failed. Please try logging in manually.");
+          setLoading(false);
+          return;
+        }
+
+        // Redirect to the dashboard
+        router.replace("/dashboard");
       } else {
         toast.error("User registration failed."); // Use toastify for error
       }
@@ -85,18 +99,21 @@ export default function App() {
               onChange={(e) => setName(e.target.value)}
               type="text"
               placeholder="Full Name"
+              value={name}
             />
             <input
               className="px-4 py-2 bg-white rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 w-full"
               onChange={(e) => setEmail(e.target.value)}
               type="text"
               placeholder="Email"
+              value={email}
             />
             <input
               className="px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 w-full"
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               placeholder="Password"
+              value={password}
             />
             <button
               className="bg-blue-600 hover:bg-blue-400 text-white font-bold cursor-pointer px-6 py-2 rounded-md w-full"
