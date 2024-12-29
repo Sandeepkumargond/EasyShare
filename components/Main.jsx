@@ -6,9 +6,10 @@ import { CldUploadWidget } from "next-cloudinary";
 import { saveToDatabase, fetchFiles } from "@/lib/actions";
 import AllFiles from "./AllFiles";
 import { SlHome } from "react-icons/sl";
+import { FaSearch } from "react-icons/fa"; // Import the search icon
 
 export default function UserInfo() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();  // Added status for checking session loading
   const [file, setFile] = useState({});
   const [error, setError] = useState("");
   const [fileUrl, setFileUrl] = useState("");
@@ -17,25 +18,31 @@ export default function UserInfo() {
   const [showAllFiles, setShowAllFiles] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState("Copy");
+  const [showIcon, setShowIcon] = useState(false); // Search icon visibility state
 
   const fetchAllFiles = async () => {
     try {
-      // console.log();
-      
+      if (!session) {
+        console.error("Session is undefined");
+        return;
+      }
+      setShowIcon(true); // Show search icon
       setLoading(true);
       const files = await fetchFiles(session.user.id);
       setAllFiles(JSON.parse(files));
-      setLoading(false);
     } catch (err) {
       console.error("Error fetching all files:", err);
-      setError("Failed to fetch all files");
+    } finally {
       setLoading(false);
+      setShowIcon(false); // Hide search icon
     }
   };
 
   useEffect(() => {
-    fetchAllFiles();
-  }, []);
+    if (status === "authenticated") {  // Only fetch files when the session is authenticated
+      fetchAllFiles();
+    }
+  }, [status]);  // Add status as a dependency to trigger re-fetch when session is authenticated
 
   const handleViewAllFiles = async () => {
     setShowAllFiles(true);
@@ -47,41 +54,47 @@ export default function UserInfo() {
   const handleSubmit = async () => {
     if (file.size > 10 * 1024 * 1024) {
       alert("File size should be less than 10MB");
+      return;
     } else if (!fileUrl) {
       alert("Please upload a file first");
       return;
     }
-
+  
     try {
+      setShowIcon(true); // Show loading icon
       setSubmitLoading(true);
       setError("");
+  
+      // Save file data
       const filedata = {
         name: file.name,
         secure_url: fileUrl,
         size: file.size,
         type: file.type,
       };
-
-      const result = await saveToDatabase(filedata, session?.user.id);
-      console.log("Save result:", result);
-
-      const filesResult = await fetchFiles();
-      setAllFiles(JSON.parse(filesResult));
-
+  
+      await saveToDatabase(filedata, session?.user.id);
+  
+      // Fetch updated files after saving
+      await fetchAllFiles();
+  
+      // Clear file input and URL
       setFile({});
       setFileUrl("");
-
+  
       alert("File uploaded successfully!");
+  
+      // Redirect to "All Files" view
       setShowAllFiles(true);
     } catch (err) {
       console.error("Error saving file:", err);
       setError(err.message || "Failed to save file");
     } finally {
       setSubmitLoading(false);
+      setShowIcon(false); // Hide loading icon
     }
   };
   
-
 
   const handleCopy = () => {
     navigator.clipboard.writeText(file.secure_url).then(() => {
@@ -89,6 +102,16 @@ export default function UserInfo() {
       setTimeout(() => setCopyButtonText("Copy"), 2000);
     });
   };
+
+  if (status === "loading") {
+    // Show a loading message or spinner while session is being fetched
+    return <div>Loading...</div>;
+  }
+
+  if (status === "unauthenticated") {
+    // Handle unauthenticated state, you can redirect or show a message here
+    return <div>You are not authenticated. Please log in.</div>;
+  }
 
   return (
     <div className="bg-gray-900 min-h-screen text-white">
@@ -138,7 +161,7 @@ export default function UserInfo() {
 
             <CldUploadWidget
               uploadPreset="easyshare"
-              resourceType="raw" 
+              resourceType="raw"
               onSuccess={(result, { widget }) => {
                 const fileInfo = result?.info;
                 console.log("Upload result:", fileInfo);
@@ -179,10 +202,8 @@ export default function UserInfo() {
             {error && <p className="text-red-500 mt-4">{error}</p>}
 
             {fileUrl && (
-              <div className="mt-4 p-4 sm:w-10 bg-gray-800 rounded-lg">
-                <p className="text-green-400 mb-2">
-                  File uploaded successfully!
-                </p>
+              <div className="mt-4 p-4 bg-gray-800 rounded-lg max-w-3xl">
+                <p className="text-green-400 mb-2">File uploaded successfully!</p>
                 <div className="flex flex-col gap-2">
                   <p>
                     <strong>Name:</strong> {file.name}
@@ -195,7 +216,7 @@ export default function UserInfo() {
                   </p>
                   <p className="flex flex-col sm:flex-row items-center gap-2">
                     <strong>URL:</strong>
-                    <span className="truncate max-w-full sm:max-w-xs">
+                    <span className="truncate max-w-full sm:max-w-md">
                       {file.secure_url}
                     </span>
                     <button
@@ -217,6 +238,12 @@ export default function UserInfo() {
               </div>
             )}
           </>
+        )}
+
+        {showIcon && (
+          <div className="text-4xl mt-6">
+            <FaSearch className="animate-spin" />
+          </div>
         )}
       </div>
     </div>

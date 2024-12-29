@@ -4,12 +4,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "./navbar";
+import { FaSearch } from "react-icons/fa"; // Import the search icon
+import { ToastContainer, toast } from "react-toastify"; // Import toastify
+import "react-toastify/dist/ReactToastify.css"; // Import the toastify CSS
 
 export default function App() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // State for loading icon
+  const [success, setSuccess] = useState(false); // State for success message
 
   const router = useRouter();
 
@@ -17,11 +21,13 @@ export default function App() {
     e.preventDefault();
 
     if (!name || !email || !password) {
-      setError("All fields are necessary.");
+      toast.error("All fields are necessary."); // Use toastify for error
       return;
     }
 
     try {
+      setLoading(true); // Show loading icon
+
       const resUserExists = await fetch("api/userExists", {
         method: "POST",
         headers: {
@@ -33,7 +39,8 @@ export default function App() {
       const { user } = await resUserExists.json();
 
       if (user) {
-        setError("User already exists.");
+        toast.error("User already exists."); // Use toastify for error
+        setLoading(false); // Hide loading icon
         return;
       }
 
@@ -50,21 +57,24 @@ export default function App() {
       });
 
       if (res.ok) {
-        const form = e.target;
-        form.reset();
-        router.push("/login");
+        toast.success("Successfully registered!"); // Use toastify for success
+        setTimeout(() => {
+          router.push("/dashboard"); // Redirect to userinfo after 2 seconds
+        }, 2000);
       } else {
-        console.log("User registration failed.");
+        toast.error("User registration failed."); // Use toastify for error
       }
     } catch (error) {
-      console.log("Error during registration: ", error);
+      toast.error("Error during registration: " + error.message); // Use toastify for error
+    } finally {
+      setLoading(false); // Hide loading icon
     }
   };
 
   return (
     <>
       <Navbar />
-     
+
       <div className="grid place-items-center h-screen bg-slate-900 px-4 sm:px-0">
         <div className="shadow-lg p-5 rounded-lg border-t-4 border-blue-500 bg-slate-800 w-full max-w-md sm:w-full">
           <h1 className="text-xl font-bold my-4 text-white text-center">Register</h1>
@@ -88,15 +98,18 @@ export default function App() {
               type="password"
               placeholder="Password"
             />
-            <button className="bg-blue-600 hover:bg-blue-400 text-white font-bold cursor-pointer px-6 py-2 rounded-md w-full">
-              Register
+            <button
+              className="bg-blue-600 hover:bg-blue-400 text-white font-bold cursor-pointer px-6 py-2 rounded-md w-full"
+              disabled={loading} // Disable button when loading
+            >
+              {loading ? (
+                <div className="flex justify-center items-center gap-2">
+                  <FaSearch className="animate-spin" /> Registering...
+                </div>
+              ) : (
+                "Register"
+              )}
             </button>
-
-            {error && (
-              <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
-                {error}
-              </div>
-            )}
 
             <Link className="text-sm mt-3 text-right text-white" href={"/"}>
               Already have an account? <span className="underline">Login</span>
@@ -104,6 +117,9 @@ export default function App() {
           </form>
         </div>
       </div>
+
+      {/* ToastContainer component to render toast notifications */}
+      <ToastContainer />
     </>
   );
 }

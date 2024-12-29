@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AllFiles = ({ files }) => {
   const [allFiles, setAllFiles] = useState(files);
@@ -14,6 +16,7 @@ const AllFiles = ({ files }) => {
       return data.files || [];
     } catch (error) {
       console.error("Error fetching files:", error.message);
+      toast.error("Error fetching files: " + error.message);
       return [];
     }
   };
@@ -33,19 +36,24 @@ const AllFiles = ({ files }) => {
       }
 
       const result = await response.json();
-      alert(result.success || "File deleted successfully");
+      toast.success(result.success || "File deleted successfully");
 
-      const updatedFiles = await fetchFiles();
+      // Filter out the deleted file from the current state
+      const updatedFiles = allFiles.filter(file => file._id !== id);
       setAllFiles(updatedFiles);
+
+      // Reload the page to reflect changes
+      window.location.reload();
+
     } catch (error) {
       console.error("Error deleting file:", error.message);
-      alert(error.message || "Failed to delete the file");
+      toast.error(error.message || "Failed to delete the file");
     }
   };
 
   const handleCopy = (url) => {
     navigator.clipboard.writeText(url).then(() => {
-      alert("Copied to clipboard!");
+      toast.success("Copied to clipboard!");
     });
   };
 
@@ -81,7 +89,6 @@ const AllFiles = ({ files }) => {
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
                   >
                     Delete
-                    
                   </button>
                   <a
                     href={file.secure_url}
@@ -101,6 +108,9 @@ const AllFiles = ({ files }) => {
           </p>
         )}
       </ul>
+
+      {/* ToastContainer component to render toast notifications */}
+      <ToastContainer />
     </div>
   );
 };
