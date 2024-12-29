@@ -94,7 +94,6 @@ export default function UserInfo() {
       setShowIcon(false); // Hide loading icon
     }
   };
-  
 
   const handleCopy = () => {
     navigator.clipboard.writeText(file.secure_url).then(() => {
@@ -104,17 +103,24 @@ export default function UserInfo() {
   };
 
   if (status === "loading") {
-    // Show a loading message or spinner while session is being fetched
-    return <div>Loading...</div>;
+    // Show a loading spinner while session is being fetched
+    return (
+      <div className="bg-gray-900 min-h-screen text-white flex justify-center items-center relative">
+        <div className="absolute inset-0 bg-gray-900 opacity-50 backdrop-blur-sm" /> {/* Blurred background */}
+        <div className="flex justify-center items-center mt-6 z-10">
+          <div className="w-16 h-16 border-4 border-t-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
   }
 
   if (status === "unauthenticated") {
-    // Handle unauthenticated state, you can redirect or show a message here
+    // Handle unauthenticated state
     return <div>You are not authenticated. Please log in.</div>;
   }
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white">
+    <div className={`bg-gray-900 min-h-screen text-white ${loading ? "" : ""}`}>
       <nav className="bg-gray-800 py-4 px-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold">
           {session?.user?.name ? `Welcome, ${session.user.name}` : "EasyShare"}
@@ -165,14 +171,20 @@ export default function UserInfo() {
               onSuccess={(result, { widget }) => {
                 const fileInfo = result?.info;
                 console.log("Upload result:", fileInfo);
-                setFile({
-                  name: fileInfo.original_filename,
-                  size: fileInfo.bytes,
-                  type: fileInfo.format,
-                  secure_url: fileInfo.secure_url,
-                });
-                setFileUrl(fileInfo.secure_url);
+                // Check for the secure_url property
+                if (fileInfo?.secure_url) {
+                  setFile({
+                    name: fileInfo.original_filename,
+                    size: fileInfo.bytes,
+                    type: fileInfo.format,
+                    secure_url: fileInfo.secure_url,
+                  });
+                  setFileUrl(fileInfo.secure_url);
+                } else {
+                  console.error("File upload failed: No secure_url returned.");
+                }
               }}
+              
               onQueuesEnd={(result, { widget }) => {
                 widget.close();
               }}
@@ -241,8 +253,8 @@ export default function UserInfo() {
         )}
 
         {showIcon && (
-          <div className="text-4xl mt-6">
-            <FaSearch className="animate-spin" />
+          <div className="absolute inset-0 flex justify-center items-center z-20 backdrop-blur-sm">
+            <div className="w-16 h-16 border-4 border-t-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
           </div>
         )}
       </div>
