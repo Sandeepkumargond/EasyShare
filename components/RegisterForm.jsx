@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "./navbar";
-import { FaSearch } from "react-icons/fa"; // Import the search icon
 import { ToastContainer, toast } from "react-toastify"; // Import toastify
 import "react-toastify/dist/ReactToastify.css"; // Import the toastify CSS
+import { ClipLoader } from "react-spinners"; // Import the spinner from react-spinners
 
 export default function App() {
   const [name, setName] = useState("");
@@ -104,7 +104,7 @@ export default function App() {
             >
               {loading ? (
                 <div className="flex justify-center items-center gap-2">
-                  <FaSearch className="animate-spin" /> Registering...
+                  <ClipLoader color="#fff" size={20} /> Registering...
                 </div>
               ) : (
                 "Register"

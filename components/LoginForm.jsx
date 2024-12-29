@@ -5,9 +5,9 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Navbar from "./navbar";
-import { FaSearch } from "react-icons/fa"; // Import the search icon
 import { ToastContainer, toast } from "react-toastify"; // Import toastify
 import "react-toastify/dist/ReactToastify.css"; // Import the toastify CSS
+import { ClipLoader } from "react-spinners"; // Import a spinner from react-spinners
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -62,7 +62,6 @@ export default function LoginForm() {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -94,7 +93,7 @@ export default function LoginForm() {
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
-                  <FaSearch className="animate-spin" /> Logging in...
+                  <ClipLoader color="#fff" size={20} /> Logging in...
                 </div>
               ) : (
                 "Login"
